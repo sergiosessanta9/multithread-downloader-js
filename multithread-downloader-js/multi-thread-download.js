@@ -105,7 +105,7 @@ function getBinaryContent(url, start, end, i) {
   }
   
   async function download({ url, chunkSize, poolLimit = 1 }) {
-    const contentLength = await getFileSize(url);//await getContentLength(url);
+    const contentLength = await getContentLength(url);//await getContentLength(url);
     const chunks =
       typeof chunkSize === "number" ? Math.ceil(contentLength / chunkSize) : 1;
     const results = await asyncPool(
