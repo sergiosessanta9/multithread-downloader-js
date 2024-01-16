@@ -41,8 +41,6 @@ function getBinaryContent(url, start, end, i) {
       xhr.open("GET", url, true);
       xhr.setRequestHeader("range", `bytes=${start}-${end}`); // Set range request information
       xhr.setRequestHeader("Access-Control-Allow-Origin", '*');
-      xhr.setRequestHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-      xhr.setRequestHeader('Access-Control-Allow-Headers', 'Content-Type');
       xhr.responseType = "arraybuffer"; // Set the returned type to arraybuffer
       xhr.onload = function () {
         resolve({
