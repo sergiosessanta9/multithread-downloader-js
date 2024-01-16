@@ -27,6 +27,29 @@ function concatenate(arrays) {
       xhr.onerror = reject;
     });
   }
+
+function getFileSize(url) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('HEAD', url);
+
+    xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        const contentRange = xhr.getResponseHeader('Content-Range');
+        const fileSize = parseInt(contentRange.split('/')[1]);
+        resolve(fileSize);
+      } else {
+        reject(new Error('Errore durante il recupero delle informazioni sulla dimensione del file.'));
+      }
+    };
+
+    xhr.onerror = function() {
+      reject(new Error('Errore di rete durante il recupero delle informazioni sulla dimensione del file.'));
+    };
+
+    xhr.send();
+  });
+}
   
 function getBinaryContent(url, start, end, i) {
   return new Promise((resolve, reject) => {
@@ -82,7 +105,7 @@ function getBinaryContent(url, start, end, i) {
   }
   
   async function download({ url, chunkSize, poolLimit = 1 }) {
-    const contentLength = await getContentLength(url);
+    const contentLength = await getFileSize(url);//await getContentLength(url);
     const chunks =
       typeof chunkSize === "number" ? Math.ceil(contentLength / chunkSize) : 1;
     const results = await asyncPool(
