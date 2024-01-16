@@ -14,9 +14,6 @@ function getContentLength(url) {
     return new Promise((resolve, reject) => {
       let xhr = new XMLHttpRequest();
       xhr.open("HEAD", url);
-      xhr.setRequestHeader("Access-Control-Allow-Origin", '*');
-      xhr.setRequestHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-      xhr.setRequestHeader('Access-Control-Allow-Headers', 'Content-Type');
       
       xhr.onload = function() {
         if (xhr.status >= 200 && xhr.status < 300) {
