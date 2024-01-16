@@ -10,21 +10,29 @@ function concatenate(arrays) {
     return result;
   }
   
-  function getContentLength(url) {
+function getContentLength(url) {
     return new Promise((resolve, reject) => {
       let xhr = new XMLHttpRequest();
       xhr.open("HEAD", url);
       xhr.setRequestHeader("Access-Control-Allow-Origin", '*');
       xhr.setRequestHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
       xhr.setRequestHeader('Access-Control-Allow-Headers', 'Content-Type');
-      xhr.send();
-      xhr.onload = function () {
-        resolve(
-          // xhr.getResponseHeader("Accept-Ranges") === "bytes" &&
-          ~~xhr.getResponseHeader("Content-Length")
-        );
+      
+      xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          const contentRange = xhr.getResponseHeader('Content-Range');
+          const fileSize = parseInt(contentRange.split('/')[1]);
+          resolve(fileSize);
+        } else {
+          reject(new Error('Errore durante il recupero delle informazioni sulla dimensione del file.'));
+        }
       };
-      xhr.onerror = reject;
+      
+      xhr.onerror = function() {
+        reject(new Error('Errore di rete durante il recupero delle informazioni sulla dimensione del file.'));
+      };
+      
+      xhr.send();
     });
   }
   
